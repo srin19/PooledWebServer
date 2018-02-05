@@ -3,7 +3,7 @@ package com.test.webserver.types;
 /**
  * Enum class to represent http methods.
  * 
- * @author SRINIVAS
+ * @author SRINI
  *
  */
 public enum HttpMethod {

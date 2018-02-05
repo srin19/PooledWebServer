@@ -1,8 +1,8 @@
 package com.test.webserver.handler;
 
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 /**
  * Request handler class to read requests and create response objects.
@@ -28,7 +28,7 @@ public class RequestHandler implements Runnable {
 			response.write(socket.getOutputStream());
 			socket.close();
 		} catch (Exception exception) {
-			logger.log(Level.SEVERE, "Runtime exception...", exception);
+			logger.error("Runtime exception...", exception);
 		}
 	}
 

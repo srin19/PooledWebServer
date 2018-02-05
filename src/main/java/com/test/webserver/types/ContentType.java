@@ -1,5 +1,11 @@
 package com.test.webserver.types;
 
+/**
+ * Enum class for content types
+ * 
+ * @author SRINI
+ *
+ */
 public enum ContentType {
 
 	HTML("HTML"), //

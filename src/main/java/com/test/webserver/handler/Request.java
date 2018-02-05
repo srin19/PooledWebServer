@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
+
 import com.test.webserver.types.HttpMethod;
 
 /**
@@ -16,6 +18,7 @@ import com.test.webserver.types.HttpMethod;
  */
 public class Request {
 
+	private static Logger logger = Logger.getLogger(Request.class.getName());
 	private HttpMethod httpMethod;
 	private String uri;
 	private String httpVersion;
@@ -25,7 +28,7 @@ public class Request {
 	private String query;
 
 	public Request(InputStream inputStream) throws IOException {
-		
+
 		this.headers = new HashMap<>();
 		this.params = new HashMap<>();
 
@@ -37,12 +40,8 @@ public class Request {
 			return;
 		}
 
-		String[] requestLineArr = requestLine.split(" ", 3);
-		try {
-			httpMethod = HttpMethod.valueOf(requestLineArr[0]);
-		} catch (Exception e) {
-			httpMethod = HttpMethod.UNKNOWN;
-		}
+		// extract request method
+		String[] requestLineArr = extractRequestMethod(requestLine);
 
 		uri = requestLineArr[1];
 		httpVersion = requestLineArr[2];
@@ -65,6 +64,7 @@ public class Request {
 			for (String kv : paramPairs) {
 				String[] keyValue = kv.split("=", 2);
 				if (keyValue.length == 2) {
+					logger.info("Header: " + keyValue[0] + " value: " + keyValue[1]);
 					params.put(keyValue[0], keyValue[1]);
 				}
 			}
@@ -72,6 +72,22 @@ public class Request {
 			path = uri;
 			query = "";
 		}
+	}
+
+	/**
+	 * Method to extract http method. Sets UNKNOWN if none.
+	 * 
+	 * @param requestLine
+	 * @return
+	 */
+	private String[] extractRequestMethod(String requestLine) {
+		String[] requestLineArr = requestLine.split("\\s+");
+		try {
+			httpMethod = HttpMethod.valueOf(requestLineArr[0]);
+		} catch (Exception e) {
+			httpMethod = HttpMethod.UNKNOWN;
+		}
+		return requestLineArr;
 	}
 
 	public HttpMethod getHttpMethod() {

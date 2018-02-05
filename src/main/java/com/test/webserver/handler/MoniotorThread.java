@@ -1,7 +1,9 @@
 package com.test.webserver.handler;
 
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
+
 
 /**
  * Class to monitor threads
@@ -9,13 +11,13 @@ import java.util.logging.Logger;
  * @author SRINI
  *
  */
-public class MoniotThread implements Runnable {
+public class MoniotorThread implements Runnable {
 
-	private static Logger logger = Logger.getLogger(MoniotThread.class.getName());
+	private static Logger logger = Logger.getLogger(MoniotorThread.class);
 
 	private ThreadPoolExecutor threadPoolExecutor;
 
-	public MoniotThread(ThreadPoolExecutor threadPoolExecutor) {
+	public MoniotorThread(ThreadPoolExecutor threadPoolExecutor) {
 		this.threadPoolExecutor = threadPoolExecutor;
 	}
 
@@ -30,7 +32,7 @@ public class MoniotThread implements Runnable {
 				Thread.sleep(10000);
 			} while (true);
 		} catch (InterruptedException e) {
-			logger.severe("Exception in Monitor Thread - " + e.getMessage());
+			logger.error("Exception in Monitor Thread ", e);
 		}
 	}
 

@@ -13,7 +13,8 @@ import java.io.OutputStreamWriter;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 import com.test.webserver.types.ContentType;
 import com.test.webserver.types.HttpMethod;
@@ -35,6 +36,7 @@ public class Response {
 	public Response(Request request) throws IOException {
 
 		HttpMethod httpMethod = request.getHttpMethod();
+
 		switch (httpMethod) {
 		case HEAD:
 			addDefaultHeaders(HttpStatusCode.STATUS200);
@@ -43,7 +45,7 @@ public class Response {
 			try {
 				processGetResponse(request);
 			} catch (Exception e) {
-				log.severe("Response Error " + e);
+				log.error("Response Error ", e);
 				addDefaultHeaders(HttpStatusCode.STATUS400);
 				responseBody = HttpStatusCode.STATUS400.toString().getBytes();
 			}
@@ -82,7 +84,7 @@ public class Response {
 	}
 
 	private void processGetResponse(Request request) throws IOException {
-		addDefaultHeaders(HttpStatusCode.STATUS200);
+		
 		File file = new File("." + request.getUri());
 		if (file.isDirectory()) {
 			headers.put("Content-Type", ContentType.HTML.toString());
@@ -97,14 +99,16 @@ public class Response {
 				result.append(" <a href=\"" + subDirfile.getPath() + "\">" + subDirfile.getPath() + "</a>\n");
 			}
 			result.append("<hr></pre></body></html>");
+			addDefaultHeaders(HttpStatusCode.STATUS200);
 			responseBody = result.toString().getBytes();
 		} else if (file.exists()) {
 			try {
 				String ext = request.getUri().substring(request.getUri().indexOf(".") + 1);
 				headers.put("Content-type", ContentType.valueOf(ext.toUpperCase()).toString());
+				addDefaultHeaders(HttpStatusCode.STATUS200);
 				responseBody = getBytesFromFile(file);
 			} catch (Exception e) {
-				log.severe("Content type not found in the request: " + e);
+				log.error("Content type not found in the request: ", e);
 			}
 
 		} else {
